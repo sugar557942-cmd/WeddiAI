@@ -15,10 +15,10 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export function ModalProvider({ children }: { children: ReactNode }) {
     const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-    const [consultationType, setConsultationType] = useState<'dress' | 'hanbok' | 'studio'>('dress');
+    const [consultationType, setConsultationType] = useState<ConsultationType>('dress'); // Fixed type
     const [initialValue, setInitialValue] = useState('');
 
-    const openConsultation = (type: 'dress' | 'hanbok' | 'studio', value: string = '') => {
+    const openConsultation = (type: ConsultationType, value: string = '') => { // Fixed signature
         setConsultationType(type);
         setInitialValue(value);
         setIsConsultationOpen(true);
