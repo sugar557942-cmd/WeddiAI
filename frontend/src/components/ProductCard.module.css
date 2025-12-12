@@ -1,0 +1,82 @@
+.card {
+    border: none;
+    border-radius: var(--radius-main);
+    background: white;
+    text-align: left;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(76, 183, 165, 0.15);
+    /* Emerald tint shadow */
+}
+
+.imagePlaceholder {
+    height: 320px;
+    background-color: var(--bg-sub);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary-light);
+    font-size: 1.2rem;
+}
+
+.info {
+    padding: 1.5rem;
+}
+
+.name {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-main);
+    font-weight: 600;
+}
+
+.price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 1.2rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.detailBtn,
+.simBtn {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 8px;
+    /* Slightly squarer than main actions for cards */
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.detailBtn {
+    background: white;
+    border: 1px solid #ddd;
+    color: var(--color-text-main);
+}
+
+.detailBtn:hover {
+    border-color: var(--color-text-main);
+}
+
+.simBtn {
+    background: var(--color-text-main);
+    /* Dark stylish button */
+    border: none;
+    color: white;
+}
+
+.simBtn:hover {
+    background: black;
+}

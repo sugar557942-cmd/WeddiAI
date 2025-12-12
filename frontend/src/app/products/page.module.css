@@ -1,0 +1,33 @@
+.main {
+    padding: 3rem 0;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.titleHeader {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.titleHeader h1 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 0.8rem;
+    font-family: serif;
+    font-weight: 500;
+    /* More elegant */
+}
+
+.titleHeader p {
+    color: var(--color-text-sub);
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2.5rem;
+    padding: 0 2rem;
+}

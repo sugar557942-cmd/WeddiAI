@@ -1,0 +1,354 @@
+.panel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.displayArea {
+    flex: 1;
+    background: var(--bg-sub);
+    border-radius: var(--radius-main);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    align-items: center;
+    justify-content: center;
+    height: 500px;
+    width: 100%;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.03);
+}
+
+/* .image class removed as it is replaced by Magnifier component styles */
+
+/* Tab Design Update: Modern Pills */
+.tabs {
+    display: flex;
+    gap: 0.4rem;
+    /* Reduced gap */
+    justify-content: center;
+    padding: 0.4rem;
+    background: white;
+    border-radius: 60px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    width: fit-content;
+    margin: 0 auto;
+    flex-wrap: nowrap;
+    /* Force single line */
+}
+
+.tab {
+    padding: 0.5rem 0.8rem;
+    /* Reduced padding */
+    background: transparent;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-weight: 600;
+    font-size: 0.85rem;
+    /* Reduced font size */
+    color: var(--color-text-sub);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.tab:nth-child(4) {
+    background: linear-gradient(135deg, #1A1F2C 0%, #2A3B55 100%);
+    color: #00F0FF;
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.tab:nth-child(4):hover {
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+}
+
+.tab:nth-child(4).active {
+    background: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%);
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 114, 255, 0.4);
+    border: none;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.active {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 128, 128, 0.2);
+}
+
+/* Simulation & 3D Components */
+.simulationContainer,
+.viewerContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.simCanvas,
+.canvas3d {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+}
+
+.simImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.simulationOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Keep overlay on top of centered image */
+    background: rgba(0, 0, 0, 0);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* AI Simulation Effects */
+.aiEffectGlow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Full Blue Tint Background Effect */
+    background: radial-gradient(circle at center, rgba(0, 240, 255, 0.1) 0%, rgba(0, 20, 50, 0.85) 100%);
+    backdrop-filter: blur(3px);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 100px rgba(0, 150, 255, 0.3);
+    animation: blueMist 3s infinite alternate;
+}
+
+@keyframes blueMist {
+    from {
+        background: radial-gradient(circle at center, rgba(0, 240, 255, 0.15) 0%, rgba(0, 20, 50, 0.8) 100%);
+    }
+
+    to {
+        background: radial-gradient(circle at center, rgba(0, 240, 255, 0.25) 0%, rgba(0, 20, 60, 0.9) 100%);
+    }
+}
+
+.geminiIcon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: spinSparkle 3s infinite linear;
+}
+
+@keyframes spinSparkle {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.8;
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    }
+
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 1;
+        filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.8));
+    }
+
+    100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 0.8;
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    }
+}
+
+.loadingText {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.placeholderContainer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* Center the contained image */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fdfdfd;
+}
+
+.bgImage {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    opacity: 0.6;
+}
+
+.placeholderOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Lighter glass effect */
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholderText {
+    color: #333;
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.simControls,
+.viewerControls {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    /* Ensure child buttons align perfectly */
+    align-items: center;
+}
+
+/* .simSecondaryGroup removed for flat hierarchy alignment */
+
+.simBtnPrimary,
+.simBtnSecondary {
+    padding: 0 1.5rem;
+    height: 48px;
+    /* Fixed height for uniformity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-btn);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    line-height: normal;
+    /* Reset line-height */
+    margin: 0;
+    /* Remove potential margins */
+}
+
+.simBtnPrimary {
+    background: var(--color-primary);
+    /* Changed to Teal */
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(76, 183, 165, 0.3);
+}
+
+.simBtnPrimary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+.simBtnSecondary {
+    background: white;
+    border: 1px solid #e0e0e0;
+    color: var(--color-text-main);
+}
+
+.simBtnSecondary:hover {
+    background: #f9f9f9;
+    border-color: #ccc;
+    transform: translateY(-2px);
+}
+
+/* Split View Styles */
+/* Single View Toggle Styles */
+.singleViewContainer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.viewToggles {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 4px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+    z-index: 5;
+}
+
+.toggleBtn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--color-text-sub);
+    transition: all 0.2s;
+}
+
+.activeToggle {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.paneLabel {
+    /* Kept for legacy if needed, but unused in toggle view */
+    display: none;
+}
+
+.simBtnActive {
+    background: var(--color-primary) !important;
+    box-shadow: 0 4px 12px rgba(26, 95, 90, 0.3);
+    transform: translateY(-2px);
+}
+
+.simBtnDisabled {
+    background: #ccc !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}

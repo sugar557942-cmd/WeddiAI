@@ -1,0 +1,50 @@
+:root {
+  --font-main: 'Pretendard', 'Noto Sans KR', sans-serif;
+
+  /* Wedding Palette - Soft Emerald Elegance */
+  --color-primary: #4CB7A5;
+  /* Soft Emerald / Tiffany Redefined */
+  --color-primary-dark: #3A9D8C;
+  --color-primary-light: #A7E0D6;
+  --color-secondary: #F0FAF9;
+  /* Very Pale Mist */
+  --color-accent: #E8F5F2;
+  /* Soft White/Mint */
+  --color-gold: #D4AF37;
+  /* Subtle Gold Accents retained for elegance */
+
+  --color-text-main: #4A4A4A;
+  /* Soft Charcoal */
+  --color-text-sub: #8C8C8C;
+  /* Soft Grey */
+  --color-white: #FFFFFF;
+
+  --bg-main: #FFFFFF;
+  --bg-sub: #F7FCFB;
+  /* Hint of mint in background */
+
+  --shadow-soft: 0 10px 40px rgba(76, 183, 165, 0.08);
+  /* Colored soft shadow */
+  --radius-main: 16px;
+  --radius-btn: 50px;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: var(--font-main);
+  background: var(--bg-main);
+  color: var(--color-text-main);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

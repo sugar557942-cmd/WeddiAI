@@ -1,0 +1,7 @@
+{
+  "/filters/page": "app/filters/page.js",
+  "/products/page": "app/products/page.js",
+  "/wedding-check/page": "app/wedding-check/page.js",
+  "/products/[id]/page": "app/products/[id]/page.js",
+  "/wedding-check/report/page": "app/wedding-check/report/page.js"
+}

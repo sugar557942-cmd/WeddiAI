@@ -1,0 +1,720 @@
+/* Global / Reset */
+.main {
+    min-height: 100vh;
+    font-family: var(--font-main);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* 1. Hero Section */
+.heroSection {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    background-image: url('/images/hero_main_final_v2.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 4rem;
+    animation: fadeIn 1s ease-out;
+}
+
+.heroTitle {
+    font-size: 5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -2px;
+    font-family: serif;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.heroSubtitle {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    font-weight: 300;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.heroActions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.ctaPrimary {
+    background: var(--color-primary);
+    color: white;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(0, 128, 128, 0.4);
+}
+
+.ctaPrimary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 128, 128, 0.5);
+}
+
+.scrollIndicator {
+    position: absolute;
+    bottom: 40px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.8;
+    animation: bounce 2s infinite;
+}
+
+.scrollIndicator span {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.arrowDown {
+    width: 20px;
+    height: 20px;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: rotate(45deg);
+}
+
+/* 2. Value Section (3 Icons) */
+.valueSection {
+    padding: 6rem 0;
+    background: #fafafa;
+}
+
+.valueGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.valueCard {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: transform 0.3s;
+}
+
+.valueCard:hover {
+    transform: translateY(-5px);
+}
+
+.iconWrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    background: rgba(0, 128, 128, 0.05);
+    border-radius: 50%;
+}
+
+.valueCard h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-main);
+    font-weight: 600;
+}
+
+.valueCard p {
+    color: var(--color-text-sub);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* 3. Market Section (Trends) */
+.marketSection {
+    padding: 8rem 0;
+    background: #fff;
+}
+
+.marketGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin: 4rem 0;
+}
+
+.marketItem h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--color-primary);
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.marketItem p {
+    line-height: 1.7;
+    color: var(--color-text-sub);
+}
+
+.patentBox {
+    background: #f8f9fa;
+    padding: 3rem;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    border: 1px solid #eee;
+}
+
+.patentBox h4 {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    font-family: serif;
+}
+
+.patentBox p {
+    line-height: 1.8;
+    color: var(--color-text-main);
+}
+
+/* 4. Solution Section */
+.solutionSection {
+    padding: 8rem 0;
+    background-image: url('/images/hero_main_final_v2.png');
+    background-attachment: fixed;
+    background-size: cover;
+    position: relative;
+    color: white;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.solutionContent {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+}
+
+.solutionContent h2 {
+    font-size: 3rem;
+    font-family: serif;
+    margin-bottom: 3rem;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.solutionList {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    text-align: left;
+}
+
+.solutionList li {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 1.2rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.solutionList li::before {
+    content: "✓";
+    margin-right: 10px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* 5. Modules Section */
+.modulesSection {
+    padding: 8rem 0;
+    background: #fff;
+}
+
+.moduleRow,
+.moduleRowReverse {
+    display: flex;
+    align-items: center;
+    gap: 5rem;
+    margin-bottom: 8rem;
+}
+
+.moduleRowReverse {
+    flex-direction: row-reverse;
+}
+
+.moduleText {
+    flex: 1;
+}
+
+.moduleNum {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #f0f0f0;
+    line-height: 1;
+    margin-bottom: -1rem;
+    display: block;
+    position: relative;
+    z-index: -1;
+}
+
+.moduleText h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    font-family: serif;
+}
+
+.checkList {
+    list-style: none;
+    padding: 0;
+}
+
+.checkList li {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.6;
+    color: var(--color-text-sub);
+}
+
+.checkList li::before {
+    content: "•";
+    color: var(--color-primary);
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+.moduleImage {
+    flex: 1;
+}
+
+.moduleVisualBox {
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    transform: rotate(2deg);
+    transition: transform 0.3s;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.moduleRowReverse .moduleVisualBox {
+    transform: rotate(-2deg);
+}
+
+.moduleVisualBox:hover {
+    transform: rotate(0deg);
+}
+
+.moduleImg {
+    width: 60%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* 6. Target Audience */
+/* 6. Target Audience */
+.targetSection {
+    padding: 10rem 0 10rem;
+    background: #f8f8f8;
+}
+
+.targetGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    /* Increased gap */
+    margin-top: 4rem;
+}
+
+.targetCard {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+}
+
+.targetHeader {
+    background: var(--color-primary);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+}
+
+.targetCard h3 {
+    padding: 2.5rem 2rem 1.5rem;
+    font-size: 1.6rem;
+    text-align: center;
+    color: #222;
+}
+
+.targetCard ul {
+    list-style: none;
+    padding: 0 3rem 3rem;
+}
+
+.targetCard li {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+    color: var(--color-text-sub);
+    text-align: center;
+    font-size: 1.05rem;
+}
+
+.targetCard li:last-child {
+    border-bottom: none;
+}
+
+/* 7. Flow Section */
+.flowSection {
+    padding: 12rem 0;
+    /* Massive spacing */
+    background: white;
+}
+
+.flowSteps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.flowStep {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.flowNum {
+    width: 60px;
+    height: 60px;
+    background: white;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0 auto 1rem;
+    transition: all 0.3s;
+}
+
+.flowStep:hover .flowNum {
+    background: var(--color-primary);
+    color: white;
+}
+
+.flowStep h4 {
+    font-weight: 600;
+}
+
+.flowLine {
+    flex: 1;
+    height: 2px;
+    background: #eee;
+    margin: 0 1rem;
+    margin-bottom: 2rem;
+}
+
+/* 8. Tech Section */
+.techSection {
+    padding: 5rem 0;
+    background: #111;
+    color: white;
+    text-align: center;
+}
+
+.techSection h2 {
+    margin-bottom: 3rem;
+    font-size: 2rem;
+}
+
+.techBadges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.techBadges span {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+/* 9. Reviews */
+.reviewSection {
+    padding: 8rem 0;
+    background: #fff;
+}
+
+.reviewGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.reviewCard {
+    background: #fafafa;
+    padding: 2rem;
+    border-radius: 20px;
+    position: relative;
+}
+
+.reviewText {
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--color-text-main);
+    margin-bottom: 1.5rem;
+}
+
+.reviewAuthor {
+    display: block;
+    color: var(--color-text-sub);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: right;
+}
+
+/* 10. Pricing Section */
+.pricingSection {
+    padding: 8rem 0;
+    background: #f4f4f4;
+}
+
+.pricingGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.priceCard {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.priceCard:nth-child(2) {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--color-primary);
+}
+
+.priceCard h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-sub);
+}
+
+.priceValue {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-main);
+}
+
+.priceCard p {
+    color: var(--color-text-sub);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.priceBtn {
+    display: block;
+    background: var(--color-primary);
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.priceBtnSecondary {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #ddd;
+    color: var(--color-text-main);
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 11. Final CTA */
+.finalCtaSection {
+    padding: 8rem 0;
+    text-align: center;
+    background: white;
+}
+
+.finalCtaSection h2 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    font-family: serif;
+}
+
+.finalButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.finalBtnPrimary {
+    background: var(--color-primary);
+    color: white;
+    padding: 1.2rem 3rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 20px rgba(0, 128, 128, 0.3);
+}
+
+.finalBtnSecondary {
+    background: white;
+    border: 2px solid #eee;
+    color: var(--color-text-main);
+    padding: 1.2rem 3rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .heroTitle {
+        font-size: 3.5rem;
+    }
+
+    .valueGrid,
+    .marketGrid,
+    .targetGrid,
+    .reviewGrid,
+    .pricingGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .solutionList {
+        grid-template-columns: 1fr;
+    }
+
+    .moduleRow,
+    .moduleRowReverse {
+        flex-direction: column;
+        text-align: center;
+        gap: 3rem;
+        margin-bottom: 6rem;
+    }
+
+    .moduleRowReverse {
+        flex-direction: column;
+    }
+
+    .moduleNum {
+        margin: 0 auto -1rem;
+    }
+
+    .checkList li {
+        text-align: left;
+        display: inline-block;
+    }
+
+    .flowSteps {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .flowLine {
+        width: 2px;
+        height: 30px;
+        margin: 0 auto;
+    }
+
+    .finalButtons {
+        flex-direction: column;
+        align-items: center;
+    }
+}

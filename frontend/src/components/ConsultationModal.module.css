@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    /* Changed from 100% to 100vh to ensure full viewport coverage */
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Center Vertically and Horizontally */
+    z-index: 1000;
+    padding: 20px;
+    /* Prevent modal directly touching screen edges */
+}
+
+.modal {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    padding: 3rem;
+    border-radius: 8px;
+    /* Sharper corners for elegance */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    position: relative;
+    border: 1px solid #e0e0e0;
+    /* Premium Look */
+    font-family: 'Nanum Myeongjo', serif;
+    background-image: linear-gradient(to bottom right, #fffdf9, #fff);
+    /* Creamy tint */
+
+    /* Ensure modal fits in viewport */
+    max-height: 90vh;
+    overflow-y: auto;
+    /* margin: auto removed as flexbox handles centering */
+}
+
+/* Elegant framing effect */
+.modal::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 1px solid #d4af37;
+    /* Gold accent border */
+    pointer-events: none;
+    border-radius: 4px;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Type Selection Tabs */
+.typeTabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: #f5f5f5;
+    padding: 0.3rem;
+    border-radius: 30px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tabBtn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    background: transparent;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--color-text-sub);
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.activeTab {
+    background: white;
+    color: var(--color-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.closeBtn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #999;
+    font-family: Arial, sans-serif;
+    /* Keep close btn simple */
+    z-index: 10;
+}
+
+.modal h2 {
+    color: var(--color-primary-dark);
+    margin-bottom: 0.5rem;
+}
+
+.modal p {
+    color: var(--color-text-sub);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    /* Adjusted gap */
+}
+
+.row {
+    display: flex;
+    gap: 1rem;
+}
+
+.row .field {
+    flex: 1;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.field label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text-main);
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: 'Nanum Myeongjo', serif;
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.2s;
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: #d4af37;
+    /* Gold focus */
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+    background: #fff;
+}
+
+.submitBtn {
+    width: 100%;
+    padding: 1rem;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Nanum Myeongjo', serif;
+    letter-spacing: 2px;
+    transition: background 0.2s;
+    margin-top: 1rem;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 20;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.suggestions li {
+    padding: 0.8rem;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestions li:hover {
+    background: #f5f5f5;
+}
+
+.submitBtn:hover {
+    background: var(--color-primary-dark);
+}

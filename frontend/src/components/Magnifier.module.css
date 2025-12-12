@@ -1,0 +1,34 @@
+.magnifierContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* Contains the lens */
+    cursor: crosshair;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sourceImage {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.magnifierLens {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    /* Circle lens */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background-repeat: no-repeat;
+    pointer-events: none;
+    /* Let mouse events pass through to container */
+    z-index: 10;
+    /* Optional: glass effect */
+    background-color: rgba(255, 255, 255, 0.1);
+}
