@@ -3,61 +3,67 @@ import os
 import base64
 from typing import List, Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from google import genai
 from google.genai import types
 
-# 환경 변수에서 Gemini API 키 읽기 (코드에 직접 키를 적지 말 것)
-GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
+# 1. Environment Variable Check
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    print("WARNING: GEMINI_API_KEY not found in environment variables.")
 
-# Gemini 클라이언트 생성
+# 2. Client Initialization (Unified SDK)
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# FastAPI 앱
+# 3. FastAPI App
 app = FastAPI(title="Wedding AI Service")
 
 
-# ---------- 스키마 정의 ----------
-
+# 4. Schema Definitions
 class GenerateRequest(BaseModel):
     prompt: str
     image_base64: Optional[str] = None
+    mime_type: Optional[str] = "image/jpeg"  # Default fallback
 
 
 class GenerateResponse(BaseModel):
-    # base64 인코딩된 이미지 여러 장을 돌려줄 수도 있으므로 리스트로 정의
     images: List[str]
 
 
-# ---------- 기본 헬스 체크 엔드포인트 ----------
-
+# 5. Health Check
 @app.get("/")
 def read_root():
     return {"status": "ok", "service": "wedding-ai-service"}
 
 
-# ---------- Gemini 이미지 생성 엔드포인트 ----------
-
+# 6. Generate Image Endpoint
 @app.post("/ai/generate-image", response_model=GenerateResponse)
 def generate_image(body: GenerateRequest):
     """
-    Google Gemini (Nano Banana Pro image)를 호출해서
-    프롬프트 기반 이미지를 생성하고, base64 문자열 목록으로 반환하는 엔드포인트.
+    Generates an image using Google Gemini (Nano Banana Pro image).
+    Expects 'image_base64' string in the body.
+    Returns a list of base64 strings.
     """
     model = "gemini-3-pro-image-preview"
+
+    # Validate inputs
+    if not body.prompt:
+        raise HTTPException(status_code=400, detail="Prompt is required.")
 
     contents_parts = [types.Part.from_text(text=body.prompt)]
 
     if body.image_base64:
-        # base64 문자열을 바이트로 디코딩
         try:
+            # Decode base64 to bytes
             image_bytes = base64.b64decode(body.image_base64)
-            contents_parts.append(types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"))
+            # Use provided mime_type or fallback
+            valid_mime = body.mime_type if body.mime_type in ["image/png", "image/jpeg", "image/webp"] else "image/jpeg"
+            
+            contents_parts.append(types.Part.from_bytes(data=image_bytes, mime_type=valid_mime))
         except Exception as e:
             print(f"Error decoding image: {e}")
-            # 이미지가 손상되었거나 디코딩 실패 시 텍스트만으로 진행하거나 에러 반환 가능
-            # 여기서는 텍스트만으로 진행
+            raise HTTPException(status_code=400, detail=f"Invalid image_base64 data: {str(e)}")
 
     contents = [
         types.Content(
@@ -71,32 +77,40 @@ def generate_image(body: GenerateRequest):
         image_config=types.ImageConfig(image_size="1K"),
     )
 
-    # Gemini 호출
-    result = client.models.generate_content(
-        model=model,
-        contents=contents,
-        config=generate_content_config,
-    )
+    try:
+        # Call Gemini
+        result = client.models.generate_content(
+            model=model,
+            contents=contents,
+            config=generate_content_config,
+        )
 
-    images: List[str] = []
+        images: List[str] = []
 
-    # 결과 후보들 중에서 inline_data(이미지) 부분만 추출
-    if result.candidates:
-        for cand in result.candidates:
-            if not cand.content or not cand.content.parts:
-                continue
-            for part in cand.content.parts:
-                inline = getattr(part, "inline_data", None)
-                if inline and inline.data:
-                    # inline.data 는 이미 바이너리(base64) 형태
-                    images.append(inline.data)
+        if result.candidates:
+            for cand in result.candidates:
+                if not cand.content or not cand.content.parts:
+                    continue
+                for part in cand.content.parts:
+                    inline = getattr(part, "inline_data", None)
+                    if inline and inline.data:
+                        # inline.data is bytes. MUST convert to base64 string for JSON response.
+                        b64_str = base64.b64encode(inline.data).decode("utf-8")
+                        images.append(b64_str)
+        
+        if not images:
+             raise HTTPException(status_code=500, detail="Gemini returned no images.")
+            
+        return GenerateResponse(images=images)
 
-    return GenerateResponse(images=images)
+    except Exception as e:
+        print(f"Gemini API Error: {e}")
+        raise HTTPException(status_code=500, detail=f"Gemini API Error: {str(e)}")
 
 
-# ---------- 개발용 직접 실행 ----------
-
+# 7. Local Development Execution
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    # Use PORT env var if available (default 8080 logic handled by shell or fallback here)
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port)

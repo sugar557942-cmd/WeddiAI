@@ -96,7 +96,11 @@ export default function SimulationPanel({ product, autoTriggerUpload = false }: 
             const res = await fetch("/api/generate-image", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt, image: base64Image }),
+                body: JSON.stringify({
+                    prompt,
+                    image: base64Image,
+                    mimeType: selectedFile.type // Send mimeType
+                }),
             });
 
             if (!res.ok) {
