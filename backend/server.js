@@ -3,15 +3,34 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const port = 3005;
+
+// Cloud Run은 PORT 환경변수를 반드시 사용
+const port = process.env.PORT || 3005;
+
+// ai_service(예: FastAPI) 주소
+// 로컬: http://localhost:8000
+// 배포: Cloud Run에서 환경변수로 실제 URL 넣기
+const aiBaseUrl = process.env.AI_BASE_URL || "http://localhost:8000";
+
+// 프론트 도메인 허용 목록
+// 로컬과 Vercel 모두 대응
+const allowedOrigins = [
+    "http://localhost:3000",
+    process.env.FRONTEND_ORIGIN,
+    "https://weddi-ai.vercel.app",
+].filter(Boolean);
 
 // JSON 바디 파싱
 app.use(express.json({ limit: "10mb" }));
 
-// CORS 설정 (프론트가 localhost:3000 에서 돈다고 가정)
+// CORS 설정
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: (origin, callback) => {
+            if (!origin) return callback(null, true); // curl, server-to-server 등
+            if (allowedOrigins.includes(origin)) return callback(null, true);
+            return callback(new Error(`CORS blocked for origin: ${origin}`));
+        },
         credentials: true,
     })
 );
@@ -26,8 +45,7 @@ app.get("/api/products", (req, res) => {
     res.json({ message: "Product list endpoint" });
 });
 
-// ---------- AI 서비스 프록시 엔드포인트 ----------
-// 프론트엔드에서 여기를 호출하면, Node 백엔드가 FastAPI(ai_service)를 대신 호출해준다.
+// AI 서비스 프록시 엔드포인트
 app.post("/api/generate-image", async (req, res) => {
     try {
         const { prompt, image } = req.body;
@@ -37,12 +55,11 @@ app.post("/api/generate-image", async (req, res) => {
         }
 
         const payload = { prompt };
-        if (image) {
-            payload.image_base64 = image;
-        }
+        if (image) payload.image_base64 = image;
 
-        // FastAPI AI 서비스로 요청 보내기
-        const aiResponse = await fetch("http://localhost:8000/ai/generate-image", {
+        const targetUrl = `${aiBaseUrl}/ai/generate-image`;
+
+        const aiResponse = await fetch(targetUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -51,23 +68,22 @@ app.post("/api/generate-image", async (req, res) => {
         if (!aiResponse.ok) {
             const text = await aiResponse.text();
             console.error("AI service error:", text);
-            return res
-                .status(500)
-                .json({ error: "AI service failed", detail: text });
+            return res.status(aiResponse.status).json({
+                error: "AI service failed",
+                detail: text,
+            });
         }
 
-        const data = await aiResponse.json(); // { images: [...] }
-        res.json(data);
+        const data = await aiResponse.json();
+        return res.json(data);
     } catch (err) {
         console.error("Backend /api/generate-image error:", err);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error", detail: String(err) });
     }
 });
 
-// ---------- AI 일정 예측 (Mock) ----------
+// AI 일정 예측 (Mock)
 app.get("/api/wedding-schedule-template", (req, res) => {
-    // 실제로는 AI 모델이나 복잡한 DB 로직이 들어갈 자리
-    // 지금은 하드코딩된 예시 템플릿 반환
     const schedule = [
         { id: 1, title: "웨딩홀 투어 및 계약", d_day: 300, category: "venue" },
         { id: 2, title: "스/드/메 패키지 예약", d_day: 250, category: "vendor" },
@@ -80,7 +96,8 @@ app.get("/api/wedding-schedule-template", (req, res) => {
     res.json({ schedule });
 });
 
-// 서버 시작
-app.listen(port, () => {
-    console.log(`Backend server listening at http://localhost:${port}`);
+// 서버 시작 (Cloud Run 대응)
+app.listen(port, "0.0.0.0", () => {
+    console.log(`Backend server listening on port ${port}`);
+    console.log(`AI_BASE_URL = ${aiBaseUrl}`);
 });

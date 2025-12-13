@@ -93,7 +93,7 @@ export default function SimulationPanel({ product, autoTriggerUpload = false }: 
             // Step 3: Synthesis
             setSimulationStep("나노바나나 엔진으로 이미지 합성 중...");
 
-            const res = await fetch("http://localhost:3001/api/generate-image", {
+            const res = await fetch("/api/generate-image", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ prompt, image: base64Image }),
