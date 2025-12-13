@@ -79,16 +79,49 @@ export default function SimulationPanel({ product, autoTriggerUpload = false }: 
             // Step 2: Prompt Generation
             setSimulationStep("AI 프롬프트 생성 중...");
 
-            let prompt = "";
-            if (product.type === 'hanbok') {
-                prompt = "사용자가 업로드한 인물 사진의 얼굴 특징을 정확하게 분석하고 정면으로 본 사진을 한복과 합성해서 헤어와 약간의 메이크업이 된 상태로 이미지를 생성해줘. 손은 두 손을 모은 포즈로 피부색과 동일한 손으로 해줘";
-            } else {
-                // Default to dress prompt
-                prompt = "사용자가 업로드한 인물 사진의 얼굴 특징을 정확하게 분석하고 정면으로 본 사진을 드레스와 합성해서 헤어와 약간의 메이크업이 된 상태로 이미지를 생성해줘. 손은 두 손을 모은 포즈로 피부색과 동일한 손으로 해줘";
-            }
+            // English Prompt for better quality
+            const prompt = `
+Generate a high-quality photorealistic image of a Korean bride.
+Source 1 (User Face): Use the facial features, skin tone, and identity from this image.
+Source 2 (Target Outfit): Use the wedding dress (or Hanbok), veil, and accessories from this image exactly as they appear.Do not change the design.
+Instructions:
+- Seamlessly swap the face from Source 1 onto the body in Source 2.
+- Apply natural, elegant wedding makeup and a neat bridal hairstyle suitable for the outfit.
+- Pose: The bride should be standing gracefully with both hands clasped together in front (polite pose).
+- Ensure the lighting and skin tone match the outfit's environment naturally.
+- Output: High resolution, photorealistic.
+            `.trim();
 
             setGeneratedPrompt(prompt);
             await new Promise(r => setTimeout(r, 1000));
+
+            // Convert Product Image URL to Base64
+            // Note: This requires the image URL to be CORS-accessible or proxied. 
+            // Since product images are likely local or same-origin in this dev env, it might work. 
+            // If they are external (Cloudinary/GCS), ensure CORS headers allow this fetch.
+            const productImageUrl = product.images.front;
+            const toBase64FromUrl = async (url: string) => {
+                try {
+                    const response = await fetch(url);
+                    const blob = await response.blob();
+                    return new Promise<string>((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            // Result is "data:image/jpeg;base64,..."
+                            const res = reader.result as string;
+                            const base64 = res.split(',')[1];
+                            resolve(base64);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    });
+                } catch (e) {
+                    console.error("Failed to load product image for simulation", e);
+                    throw new Error("상품 이미지를 불러오는데 실패했습니다.");
+                }
+            };
+
+            const productImageBase64 = await toBase64FromUrl(productImageUrl);
 
             // Step 3: Synthesis
             setSimulationStep("나노바나나 엔진으로 이미지 합성 중...");
@@ -98,8 +131,10 @@ export default function SimulationPanel({ product, autoTriggerUpload = false }: 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     prompt,
-                    image: base64Image,
-                    mimeType: selectedFile.type // Send mimeType
+                    userImage: base64Image,
+                    productImage: productImageBase64,
+                    userMimeType: selectedFile.type,
+                    productMimeType: "image/jpeg"
                 }),
             });
 

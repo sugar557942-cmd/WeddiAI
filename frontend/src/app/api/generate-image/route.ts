@@ -11,10 +11,11 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { prompt, image_base64, mime_type } = body;
+        const { prompt, userImage, productImage, userMimeType, productMimeType } = body;
 
-        if (!prompt || typeof prompt !== "string") {
-            return NextResponse.json({ error: "prompt is required" }, { status: 400 });
+        // Validation
+        if (!prompt || !userImage || !productImage) {
+            return NextResponse.json({ error: "Missing required fields (prompt, userImage, productImage)" }, { status: 400 });
         }
 
         const targetUrl = `${backendBaseUrl}/ai/generate-image`;
@@ -24,8 +25,10 @@ export async function POST(req: Request) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 prompt,
-                image_base64,
-                mime_type,
+                user_image_base64: userImage,
+                product_image_base64: productImage,
+                user_mime_type: userMimeType || "image/jpeg",
+                product_mime_type: productMimeType || "image/jpeg"
             }),
         });
 
