@@ -104,16 +104,24 @@ export default function SimulationPanel({ product, autoTriggerUpload = false }: 
             // Step 2: Prompt Generation
             setSimulationStep("AI 프롬프트 생성 중...");
 
+            // English Prompt for Nano Banana Pro (Strict Face Swap)
             const prompt = `
-Generate a high-quality photorealistic image of a Korean bride.
-Source 1 (User Face): Use the facial features, skin tone, and identity from this image.
-Source 2 (Target Outfit): Use the wedding dress (or Hanbok), veil, and accessories from this image exactly as they appear.Do not change the design.
-Instructions:
-- Seamlessly swap the face from Source 1 onto the body in Source 2.
-- Apply natural, elegant wedding makeup and a neat bridal hairstyle suitable for the outfit.
-- Pose: The bride should be standing gracefully with both hands clasped together in front (polite pose).
-- Ensure the lighting and skin tone match the outfit's environment naturally.
-- Output: High resolution, photorealistic.
+**TASK: Realistic Face Swap (Strict)**
+Source 1: User Face (Identity source).
+Source 2: Target Dress/Background (Style/Body source).
+
+**INSTRUCTIONS:**
+1. **IDENTITY**: Replace the face in Source 2 with the face from Source 1. Preserve the user's facial features, eyes, nose, and mouth shape exactly.
+2. **PRESERVATION (CRITICAL)**:
+   - **DO NOT CHANGE THE DRESS.** Keep every fold, texture, and lace detail of the dress in Source 2 exactly as is.
+   - **DO NOT CHANGE THE BACKGROUND.** The background must remain pixel-perfect identical to Source 2.
+   - **DO NOT CHANGE THE LIGHTING.** Use the exact lighting and color grading from Source 2.
+3. **BLENDING**:
+   - Match the skin tone of the face (Source 1) to the body skin tone of the dress model (Source 2).
+   - Ensure the head shape and hair blend naturally with the veil or hair accessories present in Source 2.
+   - If Source 2 has a specific pose (e.g., hands clasped), KEEP THAT POSE. Do not generate new hands.
+
+**OUTPUT GOAL**: A highly realistic photo that looks like the user (Source 1) is wearing exactly that dress in exactly that room (Source 2).
             `.trim();
 
             setGeneratedPrompt(prompt);

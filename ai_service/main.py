@@ -33,8 +33,8 @@ def generate_image(body: GenerateRequest):
 
     # 2. Configure Gemini
     genai.configure(api_key=api_key)
-    # Using gemini-1.5-flash for speed and reliability in this region
-    model_name = "gemini-1.5-flash" 
+    # Using Gemini 1.5 Pro ("Nano Banana Pro") for high fidelity and instruction following
+    model_name = "gemini-1.5-pro" 
 
     model = genai.GenerativeModel(model_name)
 
