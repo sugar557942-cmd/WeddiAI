@@ -2,13 +2,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
     try {
-        const backendBaseUrl = process.env.BACKEND_BASE_URL;
-        if (!backendBaseUrl) {
-            return NextResponse.json(
-                { error: "BACKEND_BASE_URL is not set" },
-                { status: 500 }
-            );
-        }
+        // Default to localhost for local dev if env var is missing
+        const backendBaseUrl = process.env.BACKEND_BASE_URL || "http://127.0.0.1:8000";
 
         const body = await req.json();
         const { prompt, userImage, productImage, userMimeType, productMimeType } = body;
