@@ -33,18 +33,8 @@ def generate_image(body: GenerateRequest):
 
     # 2. Configure Gemini
     genai.configure(api_key=api_key)
-    # Using the latest vision-capable model
-    model = genai.GenerativeModel("gemini-1.5-flash") # Or gemini-3-pro-image-preview if available and preferred, checking availability. keeping "gemini-1.5-flash" or "gemini-pro-vision" is safer usually, but user had "gemini-3-pro-image-preview". Let's stick to the one that supports image generation? 
-    # Wait, "gemini-3-pro-image-preview" might be an internal or beta name the user provided. 
-    # Standard Imagen 3 model via Gemini API is usually invoked differently or via Vertex. 
-    # HOWEVER, the previous code worked with "gemini-3-pro-image-preview". I will stick to it if it works, or switch to "gemini-1.5-pro" if "generate content" is what we want. 
-    # Actually, to GENERATE images, we usually need correct model. If the user was getting images before, that model string was working.
-    # Let's keep the model string the user had: "gemini-3-pro-image-preview" might be invalid? 
-    # Previous successful code used: model = "gemini-3-pro-image-preview" (wait, I wrote that?)
-    # Let's assume "gemini-1.5-pro" for multimodal understanding and image generation if enabled? 
-    # Actually, let's stick to the previous code's model name if it wasn't erroring, OR use a known working one. 
-    # The previous code in main.py had: model = "gemini-3-pro-image-preview". 
-    model_name = "gemini-1.5-pro-latest" # Better for instruction following with images.
+    # Using gemini-1.5-flash for speed and reliability in this region
+    model_name = "gemini-1.5-flash" 
 
     model = genai.GenerativeModel(model_name)
 

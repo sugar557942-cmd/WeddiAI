@@ -154,9 +154,10 @@ Instructions:
                 throw new Error("No image generated");
             }
 
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            alert("시뮬레이션 중 오류가 발생했습니다.");
+            // Show detailed error in alert for debugging
+            alert(`시뮬레이션 오류: ${error.message || "알 수 없는 오류"}`);
         } finally {
             setIsSimulating(false);
             setSimulationStep('');
