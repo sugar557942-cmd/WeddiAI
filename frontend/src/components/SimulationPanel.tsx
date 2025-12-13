@@ -46,6 +46,43 @@ export default function SimulationPanel({ product, autoTriggerUpload = false }: 
     const [simulationStep, setSimulationStep] = useState('');
     const [generatedPrompt, setGeneratedPrompt] = useState('');
 
+    // Helper: Resize image to reduce payload size (Max 1024px)
+    const resizeImage = async (fileOrBlob: File | Blob): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = URL.createObjectURL(fileOrBlob);
+            img.onload = () => {
+                const maxDim = 1024;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) {
+                    reject(new Error("Canvas context failed"));
+                    return;
+                }
+                ctx.drawImage(img, 0, 0, width, height);
+                // Compress to JPEG 0.8
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                resolve(dataUrl.split(',')[1]); // Return base64 only
+            };
+            img.onerror = (err) => reject(err);
+        });
+    };
+
     const handleSimulate = async () => {
         if (!selectedFile) {
             alert("먼저 사진을 업로드해주세요.");
@@ -57,29 +94,16 @@ export default function SimulationPanel({ product, autoTriggerUpload = false }: 
         setGeneratedPrompt('');
 
         try {
-            // Step 1: Analyzing
-            setSimulationStep("얼굴 특징 분석 중...");
+            // Step 1: Analyzing & Resizing
+            setSimulationStep("이미지 최적화 처리 중...");
 
-            // Convert file to base64
-            const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    const result = reader.result as string;
-                    // Remove "data:image/xxx;base64," prefix
-                    const base64Data = result.split(',')[1];
-                    resolve(base64Data);
-                };
-                reader.onerror = error => reject(error);
-            });
-
-            const base64Image = await toBase64(selectedFile);
-            await new Promise(r => setTimeout(r, 1000));
+            // Resize User Image
+            const base64Image = await resizeImage(selectedFile);
+            await new Promise(r => setTimeout(r, 500));
 
             // Step 2: Prompt Generation
             setSimulationStep("AI 프롬프트 생성 중...");
 
-            // English Prompt for better quality
             const prompt = `
 Generate a high-quality photorealistic image of a Korean bride.
 Source 1 (User Face): Use the facial features, skin tone, and identity from this image.
@@ -93,37 +117,14 @@ Instructions:
             `.trim();
 
             setGeneratedPrompt(prompt);
-            await new Promise(r => setTimeout(r, 1000));
 
-            // Convert Product Image URL to Base64
-            // Note: This requires the image URL to be CORS-accessible or proxied. 
-            // Since product images are likely local or same-origin in this dev env, it might work. 
-            // If they are external (Cloudinary/GCS), ensure CORS headers allow this fetch.
+            // Step 3: Product Image (Fetch & Resize)
             const productImageUrl = product.images.front;
-            const toBase64FromUrl = async (url: string) => {
-                try {
-                    const response = await fetch(url);
-                    const blob = await response.blob();
-                    return new Promise<string>((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                            // Result is "data:image/jpeg;base64,..."
-                            const res = reader.result as string;
-                            const base64 = res.split(',')[1];
-                            resolve(base64);
-                        };
-                        reader.onerror = reject;
-                        reader.readAsDataURL(blob);
-                    });
-                } catch (e) {
-                    console.error("Failed to load product image for simulation", e);
-                    throw new Error("상품 이미지를 불러오는데 실패했습니다.");
-                }
-            };
+            const productImageResponse = await fetch(productImageUrl);
+            const productBlob = await productImageResponse.blob();
+            const productImageBase64 = await resizeImage(productBlob);
 
-            const productImageBase64 = await toBase64FromUrl(productImageUrl);
-
-            // Step 3: Synthesis
+            // Step 4: Synthesis
             setSimulationStep("나노바나나 엔진으로 이미지 합성 중...");
 
             const res = await fetch("/api/generate-image", {
@@ -133,18 +134,21 @@ Instructions:
                     prompt,
                     userImage: base64Image,
                     productImage: productImageBase64,
-                    userMimeType: selectedFile.type,
+                    userMimeType: "image/jpeg", // Always jpeg after resize
                     productMimeType: "image/jpeg"
                 }),
             });
 
             if (!res.ok) {
-                let detail = "";
+                const text = await res.text();
+                let errMsg = `Status: ${res.status} ${res.statusText}`;
                 try {
-                    const errData = await res.json();
-                    detail = errData.detail || errData.error;
-                } catch { }
-                throw new Error(detail || "API call failed");
+                    const json = JSON.parse(text);
+                    errMsg += `\nDetail: ${json.detail || json.error || JSON.stringify(json)}`;
+                } catch {
+                    errMsg += `\nResponse: ${text.slice(0, 100)}`;
+                }
+                throw new Error(errMsg);
             }
 
             const data = await res.json();
@@ -156,13 +160,14 @@ Instructions:
 
         } catch (error: any) {
             console.error(error);
-            // Show detailed error in alert for debugging
-            alert(`시뮬레이션 오류: ${error.message || "알 수 없는 오류"}`);
+            alert(`시뮬레이션 오류:\n${error.message}`);
         } finally {
             setIsSimulating(false);
             setSimulationStep('');
         }
     };
+
+
 
     const handleDownload = () => {
         if (!resultUrl) return;
