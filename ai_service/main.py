@@ -5,112 +5,100 @@ from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from google import genai
-from google.genai import types
 
-# 1. Environment Variable Check
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    print("WARNING: GEMINI_API_KEY not found in environment variables.")
+import google.generativeai as genai
 
-# 2. Client Initialization (Unified SDK)
-client = genai.Client(api_key=GEMINI_API_KEY)
 
-# 3. FastAPI App
 app = FastAPI(title="Wedding AI Service")
 
 
-# 4. Schema Definitions
 class GenerateRequest(BaseModel):
     prompt: str
     image_base64: Optional[str] = None
-    mime_type: Optional[str] = "image/jpeg"  # Default fallback
+    mime_type: Optional[str] = "image/jpeg"  # "image/jpeg" | "image/png" | "image/webp"
 
 
 class GenerateResponse(BaseModel):
     images: List[str]
 
 
-# 5. Health Check
 @app.get("/")
 def read_root():
     return {"status": "ok", "service": "wedding-ai-service"}
 
 
-# 6. Generate Image Endpoint
 @app.post("/ai/generate-image", response_model=GenerateResponse)
 def generate_image(body: GenerateRequest):
-    """
-    Generates an image using Google Gemini (Nano Banana Pro image).
-    Expects 'image_base64' string in the body.
-    Returns a list of base64 strings.
-    """
-    model = "gemini-3-pro-image-preview"
-
-    # Validate inputs
+    # 1) Validate
     if not body.prompt:
         raise HTTPException(status_code=400, detail="Prompt is required.")
 
-    contents_parts = [types.Part.from_text(text=body.prompt)]
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not set in environment variables.")
+
+    # 2) Configure Gemini (google-generativeai)
+    genai.configure(api_key=api_key)
+
+    # 네가 쓰던 모델명을 유지
+    model_name = "gemini-3-pro-image-preview"
+    model = genai.GenerativeModel(model_name)
+
+    # 3) Build input parts
+    parts = [body.prompt]
 
     if body.image_base64:
         try:
-            # Decode base64 to bytes
             image_bytes = base64.b64decode(body.image_base64)
-            # Use provided mime_type or fallback
+
             valid_mime = body.mime_type if body.mime_type in ["image/png", "image/jpeg", "image/webp"] else "image/jpeg"
-            
-            contents_parts.append(types.Part.from_bytes(data=image_bytes, mime_type=valid_mime))
+
+            # google-generativeai 는 dict 형태로 inline_data를 넣는 방식이 가장 호환이 좋음
+            parts.append(
+                {
+                    "inline_data": {
+                        "mime_type": valid_mime,
+                        "data": image_bytes,
+                    }
+                }
+            )
         except Exception as e:
-            print(f"Error decoding image: {e}")
             raise HTTPException(status_code=400, detail=f"Invalid image_base64 data: {str(e)}")
 
-    contents = [
-        types.Content(
-            role="user",
-            parts=contents_parts,
-        ),
-    ]
-
-    generate_content_config = types.GenerateContentConfig(
-        response_modalities=["IMAGE"],
-        image_config=types.ImageConfig(image_size="1K"),
-    )
-
+    # 4) Call Gemini
     try:
-        # Call Gemini
-        result = client.models.generate_content(
-            model=model,
-            contents=contents,
-            config=generate_content_config,
-        )
+        # 이미지 결과는 응답 포맷이 바뀌는 경우가 있어서
+        # 방어적으로 candidates/parts에서 inline_data를 찾아서 뽑는다.
+        result = model.generate_content(parts)
 
         images: List[str] = []
 
-        if result.candidates:
-            for cand in result.candidates:
-                if not cand.content or not cand.content.parts:
-                    continue
-                for part in cand.content.parts:
-                    inline = getattr(part, "inline_data", None)
-                    if inline and inline.data:
-                        # inline.data is bytes. MUST convert to base64 string for JSON response.
-                        b64_str = base64.b64encode(inline.data).decode("utf-8")
-                        images.append(b64_str)
-        
+        # result.candidates[0].content.parts[*].inline_data.data 구조를 우선 탐색
+        candidates = getattr(result, "candidates", None) or []
+        for cand in candidates:
+            content = getattr(cand, "content", None)
+            if not content:
+                continue
+            content_parts = getattr(content, "parts", None) or []
+            for p in content_parts:
+                inline = getattr(p, "inline_data", None)
+                if inline and getattr(inline, "data", None):
+                    b64_str = base64.b64encode(inline.data).decode("utf-8")
+                    images.append(b64_str)
+
         if not images:
-             raise HTTPException(status_code=500, detail="Gemini returned no images.")
-            
+            raise HTTPException(status_code=500, detail="Gemini returned no images.")
+
         return GenerateResponse(images=images)
 
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"Gemini API Error: {e}")
         raise HTTPException(status_code=500, detail=f"Gemini API Error: {str(e)}")
 
 
-# 7. Local Development Execution
 if __name__ == "__main__":
     import uvicorn
-    # Use PORT env var if available (default 8080 logic handled by shell or fallback here)
+
     port = int(os.environ.get("PORT", 8080))
     uvicorn.run(app, host="0.0.0.0", port=port)
