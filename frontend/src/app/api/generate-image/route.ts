@@ -6,7 +6,18 @@ export async function POST(req: Request) {
         const backendBaseUrl = process.env.BACKEND_BASE_URL || "http://127.0.0.1:8000";
 
         const body = await req.json();
-        const { prompt, userImage, productImage, userMimeType, productMimeType } = body;
+        let { prompt, userImage, productImage, userMimeType, productMimeType } = body;
+
+        // Add defensive code to strip 'data:image...base64,' from inputs
+        if (userImage && userImage.startsWith("data:")) {
+            // Basic strip in case frontend sent full data url
+            const parts = userImage.split(",");
+            if (parts.length > 1) userImage = parts[1];
+        }
+        if (productImage && productImage.startsWith("data:")) {
+            const parts = productImage.split(",");
+            if (parts.length > 1) productImage = parts[1];
+        }
 
         // Validation
         if (!prompt || !userImage || !productImage) {

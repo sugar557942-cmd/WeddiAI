@@ -1,0 +1,29 @@
+steps:
+  # Build the container image with Commit SHA tag
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/wedding-ai-backend:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/wedding-ai-backend:latest', '.']
+    dir: 'ai_service'  # Execute build in the ai_service directory
+
+  # Push the images (SHA tag and latest)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/wedding-ai-backend:$SHORT_SHA']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/wedding-ai-backend:latest']
+
+  # Deploy to Cloud Run using the SHA tag
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'wedding-ai-service'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/wedding-ai-backend:$SHORT_SHA'
+      - '--region'
+      - 'asia-northeast3'
+      - '--allow-unauthenticated'
+
+images:
+  - 'gcr.io/$PROJECT_ID/wedding-ai-backend:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/wedding-ai-backend:latest'
