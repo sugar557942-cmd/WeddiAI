@@ -16,7 +16,7 @@ try:
 except Exception:
     pkg_version = None
 
-
+logger.info("DEPLOY_MARKER v2025-12-14-1030")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("wedding.ai")
 
