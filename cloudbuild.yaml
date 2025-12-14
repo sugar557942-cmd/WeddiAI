@@ -14,10 +14,10 @@ steps:
   # Deploy to Cloud Run using the SHA tag
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
-    args:
+ args:
       - 'run'
       - 'deploy'
-      - 'wedding-ai-service'
+      - 'wedding-ai-backend'
       - '--image'
       - 'gcr.io/$PROJECT_ID/wedding-ai-backend:$SHORT_SHA'
       - '--region'
