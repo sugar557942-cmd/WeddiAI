@@ -77,8 +77,6 @@ def _decode_b64(b64: str, field_name: str) -> bytes:
 
 
 def _make_generate_config(aspect_ratio: str, resolution: str):
-    image_cfg = None
-
     if hasattr(types, "ImageConfig"):
         try:
             image_cfg = types.ImageConfig(
@@ -87,22 +85,13 @@ def _make_generate_config(aspect_ratio: str, resolution: str):
             )
         except TypeError:
             image_cfg = types.ImageConfig(aspect_ratio=aspect_ratio)
-    elif hasattr(types, "EditImageConfig"):
+
         try:
-            image_cfg = types.EditImageConfig(
-                aspect_ratio=aspect_ratio,
-                image_size=resolution,
-            )
+            return types.GenerateContentConfig(image_config=image_cfg)
         except TypeError:
-            image_cfg = types.EditImageConfig(aspect_ratio=aspect_ratio)
+            return types.GenerateContentConfig()
 
-    if image_cfg is None:
-        return None
-
-    try:
-        return types.GenerateContentConfig(image_config=image_cfg)
-    except TypeError:
-        return None
+    return types.GenerateContentConfig()
 
 
 def _extract_images(response: Any) -> List[str]:
