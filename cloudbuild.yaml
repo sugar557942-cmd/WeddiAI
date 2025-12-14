@@ -34,3 +34,6 @@ steps:
 images:
   - "gcr.io/$PROJECT_ID/wedding-ai-backend:$SHORT_SHA"
   - "gcr.io/$PROJECT_ID/wedding-ai-backend:latest"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
