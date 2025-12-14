@@ -119,7 +119,9 @@ Source 2: Target Dress/Background (Style/Body source).
 3. **BLENDING**:
    - Match the skin tone of the face (Source 1) to the body skin tone of the dress model (Source 2).
    - Ensure the head shape and hair blend naturally with the veil or hair accessories present in Source 2.
-   - If Source 2 has a specific pose (e.g., hands clasped), KEEP THAT POSE. Do not generate new hands.
+   - **HAIRSTYLE**: If the user (Source 1) does not have short hair (bob/short cut), change the hairstyle to a neat, low-bun or tied-back style suitable for a wedding ceremony. If it is already short, keep it natural.
+   - **GLOVES/HANDS**: If Source 2 has hands visible, ensure they look natural. If possible, have the hands **clasped together** modestly in front, unless Source 2 establishes a specific pose that must be kept.
+   - **EXPRESSION**: Ensure the user has a **natural, slight smile** (soft, elegant wedding expression), even if the original user photo is neutral.
 
 **OUTPUT GOAL**: A highly realistic photo that looks like the user (Source 1) is wearing exactly that dress in exactly that room (Source 2).
             `.trim();
