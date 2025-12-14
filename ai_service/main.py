@@ -133,9 +133,10 @@ def read_root():
             "google-api-core": API_CORE_VERSION,
             "has_ImageConfig": hasattr(types, "ImageConfig"),
             "has_EditImageConfig": hasattr(types, "EditImageConfig"),
+            "deploy_marker": "2025-12-14-1030"
+            "deploy_marker": "v1"
         },
     }
-
 
 @app.post("/ai/generate-image", response_model=GenerateResponse)
 def generate_image(body: GenerateRequest):
